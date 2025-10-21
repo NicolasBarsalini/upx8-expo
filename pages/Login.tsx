@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -6,32 +6,36 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
-} from 'react-native';
+} from "react-native";
 
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-import * as AppleAuthentication from 'expo-apple-authentication';
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function Login({ navigation }: any) {
   // ---------- GOOGLE AUTH ----------
   const clientId =
-    Platform.OS === 'android'
-      ? 'SEU_ANDROID_CLIENT_ID.apps.googleusercontent.com'
-      : Platform.OS === 'ios'
-      ? 'SEU_IOS_CLIENT_ID.apps.googleusercontent.com'
-      : 'SEU_WEB_CLIENT_ID.apps.googleusercontent.com';
+    Platform.OS === "android"
+      ? "SEU_ANDROID_CLIENT_ID.apps.googleusercontent.com"
+      : Platform.OS === "ios"
+      ? "SEU_IOS_CLIENT_ID.apps.googleusercontent.com"
+      : "SEU_WEB_CLIENT_ID.apps.googleusercontent.com";
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId,
   });
 
   useEffect(() => {
-    if (response?.type === 'success') {
+    if (response?.type === "success") {
       const { authentication } = response;
-      Alert.alert('Login com Google', `Token: ${authentication?.accessToken}`);
-      // Enviar token ao seu backend, se precisar
+      Alert.alert("Login com Google", `Token: ${authentication?.accessToken}`);
+      // Aqui você pode salvar o token e navegar automaticamente para o app
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MainTabs" }],
+      });
     }
   }, [response]);
 
@@ -58,12 +62,12 @@ export default function Login({ navigation }: any) {
         </TouchableOpacity>
 
         {/* APPLE */}
-        {Platform.OS === 'ios' ? (
+        {Platform.OS === "ios" ? (
           <AppleAuthentication.AppleAuthenticationButton
             buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
             buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.WHITE}
             cornerRadius={6}
-            style={{ width: '100%', height: 48 }}
+            style={{ width: "100%", height: 48 }}
             onPress={async () => {
               try {
                 const credential = await AppleAuthentication.signInAsync({
@@ -73,12 +77,16 @@ export default function Login({ navigation }: any) {
                   ],
                 });
                 Alert.alert(
-                  'Login com Apple',
+                  "Login com Apple",
                   JSON.stringify(credential, null, 2)
                 );
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "MainTabs" }],
+                });
               } catch (e: any) {
-                if (e.code === 'ERR_CANCELED') {
-                  console.log('Login Apple cancelado');
+                if (e.code === "ERR_CANCELED") {
+                  console.log("Login Apple cancelado");
                 } else {
                   console.error(e);
                 }
@@ -94,7 +102,7 @@ export default function Login({ navigation }: any) {
         {/* CRIAR CONTA */}
         <TouchableOpacity
           style={styles.buttonOutline}
-          onPress={() => navigation.navigate('Cadastrar')}
+          onPress={() => navigation.navigate("Cadastrar")}
         >
           <Text style={styles.buttonOutlineText}>Criar Conta</Text>
         </TouchableOpacity>
@@ -102,7 +110,12 @@ export default function Login({ navigation }: any) {
         {/* EXPLORAR */}
         <TouchableOpacity
           style={styles.buttonGreen}
-          onPress={() => navigation.navigate('Principal')}
+          onPress={() =>
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "MainTabs" }],
+            })
+          }
         >
           <Text style={styles.buttonGreenText}>Explorar Agora</Text>
         </TouchableOpacity>
@@ -114,24 +127,24 @@ export default function Login({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',          // fundo claro, sem imagem
-    justifyContent: 'space-between',
+    backgroundColor: "#f2f2f2",
+    justifyContent: "space-between",
     paddingVertical: 50,
   },
   header: {
     marginTop: 80,
-    alignItems: 'center',
+    alignItems: "center",
   },
   logo: {
     fontSize: 30,
-    fontWeight: '700',
-    color: '#000',
+    fontWeight: "700",
+    color: "#000",
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 16,
-    color: '#333',
-    textAlign: 'center',
+    color: "#333",
+    textAlign: "center",
     lineHeight: 22,
     paddingHorizontal: 40,
   },
@@ -141,45 +154,45 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   buttonWhite: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingVertical: 14,
     borderRadius: 6,
-    alignItems: 'center',
-    elevation: 1,                         // leve sombra no Android
+    alignItems: "center",
+    elevation: 1,
   },
   buttonWhiteDisabled: {
-    backgroundColor: '#e5e5e5',
+    backgroundColor: "#e5e5e5",
     paddingVertical: 14,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonWhiteText: {
     fontSize: 16,
-    color: '#000',
-    fontWeight: '500',
+    color: "#000",
+    fontWeight: "500",
   },
   buttonOutline: {
     borderWidth: 1,
-    borderColor: '#bbb',
-    backgroundColor: '#fff',
+    borderColor: "#bbb",
+    backgroundColor: "#fff",
     paddingVertical: 14,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonOutlineText: {
     fontSize: 16,
-    color: '#000',
-    fontWeight: '500',
+    color: "#000",
+    fontWeight: "500",
   },
   buttonGreen: {
-    backgroundColor: '#64b6ac',           // verde do botão "Explorar Agora"
+    backgroundColor: "#64b6ac",
     paddingVertical: 14,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonGreenText: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: '500',
+    color: "#fff",
+    fontWeight: "500",
   },
 });

@@ -54,6 +54,27 @@ export default function Principal({ navigation }: any) {
       rooms: "40m²",
       area: "2 Estações",
     },
+        {
+      id: 5,
+      name: "Escritório Compacto",
+      image: house1,
+      rooms: "40m²",
+      area: "2 Estações",
+    },
+        {
+      id: 6,
+      name: "Escritório Compacto",
+      image: house2,
+      rooms: "40m²",
+      area: "2 Estações",
+    },
+        {
+      id: 7,
+      name: "Escritório Compacto",
+      image: house1,
+      rooms: "40m²",
+      area: "2 Estações",
+    },
   ];
 
   const renderCard = ({ item }: any) => (
