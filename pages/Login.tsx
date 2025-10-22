@@ -1,26 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Alert,
+  TextInput,
   Platform,
 } from "react-native";
-
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import * as AppleAuthentication from "expo-apple-authentication";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function Login({ navigation }: any) {
+  // ---------- ESTADOS ----------
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+
   // ---------- GOOGLE AUTH ----------
   const clientId =
     Platform.OS === "android"
       ? "SEU_ANDROID_CLIENT_ID.apps.googleusercontent.com"
-      : Platform.OS === "ios"
-      ? "SEU_IOS_CLIENT_ID.apps.googleusercontent.com"
       : "SEU_WEB_CLIENT_ID.apps.googleusercontent.com";
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -31,13 +33,37 @@ export default function Login({ navigation }: any) {
     if (response?.type === "success") {
       const { authentication } = response;
       Alert.alert("Login com Google", `Token: ${authentication?.accessToken}`);
-      // Aqui você pode salvar o token e navegar automaticamente para o app
       navigation.reset({
         index: 0,
         routes: [{ name: "MainTabs" }],
       });
     }
   }, [response]);
+
+  // ---------- LOGIN TRADICIONAL ----------
+  const fazerLogin = () => {
+    const emailValido = "pedro@gmail.com";
+    const senhaValida = "1234";
+
+    // Limpa erro anterior
+    setErro("");
+
+    if (email.trim() === "" || senha.trim() === "") {
+      setErro("Preencha todos os campos.");
+      return;
+    }
+
+    if (email === emailValido && senha === senhaValida) {
+      Alert.alert("Sucesso", "Login realizado com sucesso!");
+      setErro("");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MainTabs" }],
+      });
+    } else {
+      setErro("E-mail ou senha incorretos.");
+    }
+  };
 
   // ---------- RENDERIZAÇÃO ----------
   return (
@@ -50,7 +76,33 @@ export default function Login({ navigation }: any) {
         </Text>
       </View>
 
-      {/* Botões */}
+      {/* Campos de login */}
+      <View style={styles.form}>
+        <TextInput
+          style={[styles.input, erro && { borderColor: "#E53935" }]}
+          placeholder="E-mail"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <TextInput
+          style={[styles.input, erro && { borderColor: "#E53935" }]}
+          placeholder="Senha"
+          secureTextEntry
+          value={senha}
+          onChangeText={setSenha}
+        />
+
+        {erro ? <Text style={styles.errorText}>{erro}</Text> : null}
+
+        <TouchableOpacity style={styles.buttonGreen} onPress={fazerLogin}>
+          <Text style={styles.buttonGreenText}>Entrar</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Outras opções */}
       <View style={styles.buttons}>
         {/* GOOGLE */}
         <TouchableOpacity
@@ -61,44 +113,6 @@ export default function Login({ navigation }: any) {
           <Text style={styles.buttonWhiteText}>Continuar com Google</Text>
         </TouchableOpacity>
 
-        {/* APPLE */}
-        {Platform.OS === "ios" ? (
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.WHITE}
-            cornerRadius={6}
-            style={{ width: "100%", height: 48 }}
-            onPress={async () => {
-              try {
-                const credential = await AppleAuthentication.signInAsync({
-                  requestedScopes: [
-                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                  ],
-                });
-                Alert.alert(
-                  "Login com Apple",
-                  JSON.stringify(credential, null, 2)
-                );
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: "MainTabs" }],
-                });
-              } catch (e: any) {
-                if (e.code === "ERR_CANCELED") {
-                  console.log("Login Apple cancelado");
-                } else {
-                  console.error(e);
-                }
-              }
-            }}
-          />
-        ) : (
-          <TouchableOpacity style={styles.buttonWhiteDisabled}>
-            <Text style={styles.buttonWhiteText}>Continuar com Apple</Text>
-          </TouchableOpacity>
-        )}
-
         {/* CRIAR CONTA */}
         <TouchableOpacity
           style={styles.buttonOutline}
@@ -106,28 +120,16 @@ export default function Login({ navigation }: any) {
         >
           <Text style={styles.buttonOutlineText}>Criar Conta</Text>
         </TouchableOpacity>
-
-        {/* EXPLORAR */}
-        <TouchableOpacity
-          style={styles.buttonGreen}
-          onPress={() =>
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "MainTabs" }],
-            })
-          }
-        >
-          <Text style={styles.buttonGreenText}>Explorar Agora</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
+// ---------- ESTILOS ----------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#F5F5F5",
     justifyContent: "space-between",
     paddingVertical: 50,
   },
@@ -136,9 +138,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    fontSize: 30,
+    fontSize: 32,
     fontWeight: "700",
-    color: "#000",
+    color: "#2E8376",
     marginBottom: 12,
   },
   subtitle: {
@@ -148,23 +150,43 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     paddingHorizontal: 40,
   },
+  form: {
+    paddingHorizontal: 30,
+    gap: 12,
+  },
+  input: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    fontSize: 15,
+    color: "#000",
+  },
+  buttonGreen: {
+    backgroundColor: "#2E8376",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  buttonGreenText: {
+    fontSize: 16,
+    color: "#fff",
+    fontWeight: "600",
+  },
   buttons: {
     paddingHorizontal: 30,
-    gap: 14,
+    gap: 12,
     marginBottom: 40,
   },
   buttonWhite: {
     backgroundColor: "#fff",
     paddingVertical: 14,
-    borderRadius: 6,
+    borderRadius: 8,
     alignItems: "center",
     elevation: 1,
-  },
-  buttonWhiteDisabled: {
-    backgroundColor: "#e5e5e5",
-    paddingVertical: 14,
-    borderRadius: 6,
-    alignItems: "center",
   },
   buttonWhiteText: {
     fontSize: 16,
@@ -176,7 +198,7 @@ const styles = StyleSheet.create({
     borderColor: "#bbb",
     backgroundColor: "#fff",
     paddingVertical: 14,
-    borderRadius: 6,
+    borderRadius: 8,
     alignItems: "center",
   },
   buttonOutlineText: {
@@ -184,15 +206,11 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "500",
   },
-  buttonGreen: {
-    backgroundColor: "#64b6ac",
-    paddingVertical: 14,
-    borderRadius: 6,
-    alignItems: "center",
-  },
-  buttonGreenText: {
-    fontSize: 16,
-    color: "#fff",
+  errorText: {
+    color: "#E53935",
+    fontSize: 14,
+    marginTop: 2,
+    textAlign: "center",
     fontWeight: "500",
   },
 });

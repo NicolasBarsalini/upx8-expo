@@ -9,47 +9,15 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-import house1 from "../assets/house1.jpg";
-import house2 from "../assets/house2.jpg";
+import { useProjetos } from "../context/ProjetosContext"; // 👈 Importa o contexto
 
 export default function Principal({ navigation }: any) {
+  const { projetos } = useProjetos(); // 👈 Usa o estado global
   const { width } = useWindowDimensions();
 
   const GAP = width < 400 ? 10 : 14;
   const SIDE_PADDING = width < 400 ? 10 : 16;
   const CARD_WIDTH = (width - SIDE_PADDING * 2 - GAP) / 2;
-
-  const models = [
-    {
-      id: 1,
-      name: "Casa Moderna",
-      image: house1,
-      rooms: "3 Quartos",
-      area: "120m²",
-    },
-    {
-      id: 2,
-      name: "Apartamento Compacto",
-      image: house2,
-      rooms: "2 Quartos",
-      area: "80m²",
-    },
-    {
-      id: 3,
-      name: "Casa de Campo",
-      image: house1,
-      rooms: "3 Quartos",
-      area: "150m²",
-    },
-    {
-      id: 4,
-      name: "Escritório Compacto",
-      image: house2,
-      rooms: "40m²",
-      area: "2 Estações",
-    },
-  ];
 
   const renderCard = ({ item }: any) => (
     <TouchableOpacity
@@ -57,12 +25,17 @@ export default function Principal({ navigation }: any) {
       activeOpacity={0.85}
       onPress={() => navigation.navigate("Detalhes", { model: item })}
     >
-      <Image source={item.image} style={styles.image} />
+      <Image
+        source={
+          typeof item.image === "string"
+            ? { uri: item.image } // imagens vindas do cadastro
+            : item.image // imagens locais
+        }
+        style={styles.image}
+      />
       <View style={styles.cardBody}>
         <Text style={styles.modelName}>{item.name}</Text>
-        <Text style={styles.infoText}>
-          {item.rooms} | {item.area}
-        </Text>
+        <Text style={styles.infoText}>{item.info}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -88,8 +61,9 @@ export default function Principal({ navigation }: any) {
         <Text style={styles.headerTitle}>Catálogo de Projetos</Text>
       </View>
 
+      {/* Lista de projetos dinâmica */}
       <FlatList
-        data={models}
+        data={projetos}
         renderItem={renderCard}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
@@ -101,6 +75,14 @@ export default function Principal({ navigation }: any) {
           gap: GAP,
         }}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="cube-outline" size={50} color="#ccc" />
+            <Text style={styles.emptyText}>
+              Nenhum projeto cadastrado ainda
+            </Text>
+          </View>
+        }
       />
     </View>
   );
@@ -176,5 +158,14 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 13,
     color: "#666",
+  },
+  emptyContainer: {
+    alignItems: "center",
+    marginTop: 80,
+  },
+  emptyText: {
+    color: "#999",
+    fontSize: 15,
+    marginTop: 10,
   },
 });

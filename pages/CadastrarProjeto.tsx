@@ -13,8 +13,11 @@ import {
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
+import { useProjetos } from "../context/ProjetosContext"; // 👈 contexto global
 
 export default function CadastrarProjeto({ navigation }: any) {
+  const { adicionarProjeto } = useProjetos(); // 👈 adiciona projeto globalmente
+
   const [nome, setNome] = useState("");
   const [info, setInfo] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -69,7 +72,7 @@ export default function CadastrarProjeto({ navigation }: any) {
     ]).start();
   };
 
-  // 💾 Salvar com validação
+  // 💾 Salvar com validação e limpar depois
   const salvarProjeto = () => {
     const novosErros: { [key: string]: boolean } = {
       nome: nome.trim() === "",
@@ -85,8 +88,28 @@ export default function CadastrarProjeto({ navigation }: any) {
       return;
     }
 
+    // Adiciona projeto no contexto global
+    adicionarProjeto({
+      id: Date.now(),
+      name: nome,
+      image: imagem,
+      info,
+      descricao,
+    });
+
+    // Mostra sucesso
     showToast(`Projeto "${nome}" cadastrado com sucesso!`);
-    setTimeout(() => navigation.goBack(), 2000);
+
+    // 🧹 Limpa todos os campos para novo cadastro
+    setNome("");
+    setInfo("");
+    setDescricao("");
+    setImagem(null);
+    setArquivos({});
+    setErroCampos({});
+
+    // Retorna pra tela principal depois de um curto delay
+    setTimeout(() => navigation.navigate("Início"), 2000);
   };
 
   return (
@@ -132,7 +155,11 @@ export default function CadastrarProjeto({ navigation }: any) {
           }}
         />
         <TextInput
-          style={[styles.input, styles.textarea, erroCampos.descricao && styles.inputError]}
+          style={[
+            styles.input,
+            styles.textarea,
+            erroCampos.descricao && styles.inputError,
+          ]}
           placeholder="Descrição do projeto"
           value={descricao}
           onChangeText={(v) => {

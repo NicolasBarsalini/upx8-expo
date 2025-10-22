@@ -14,6 +14,9 @@ import Detalhes from "../pages/Detalhes";
 import CadastrarProjeto from "../pages/CadastrarProjeto";
 import Perfil from "../pages/Perfil";
 
+// Importa o contexto global de projetos
+import { ProjetosProvider } from "../context/ProjetosContext";
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -59,19 +62,23 @@ function MainTabs() {
         component={CadastrarProjeto}
         options={{
           tabBarLabel: "Adicionar",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: () => (
             <View
               style={{
-                width: 30,
-                height: 30,
-                borderRadius: 35,
+                width: 28,
+                height: 28,
+                borderRadius: 28,
                 backgroundColor: "#2E8376",
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 5, // deixa ele visualmente centralizado
+                marginBottom: 10,
+                shadowColor: "#000",
+                shadowOpacity: 0.2,
+                shadowRadius: 3,
+                elevation: 5,
               }}
             >
-              <Ionicons name="add" size={23} color="#fff" />
+              <Ionicons name="add" size={21} color="#fff" />
             </View>
           ),
         }}
@@ -99,7 +106,7 @@ function PrincipalStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false, // 👈 oculta o cabeçalho padrão do Stack
+        headerShown: false, // oculta o cabeçalho padrão do Stack
       }}
     >
       <Stack.Screen name="Principal" component={Principal} />
@@ -112,24 +119,25 @@ function PrincipalStack() {
   );
 }
 
-
 /**
  * 🚀 Navegação principal do aplicativo
  */
 export default function AppNavigation() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{ headerShown: false }}
-      >
-        {/* Fluxo inicial */}
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Cadastrar" component={Cadastrar} />
+    <ProjetosProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Login"
+          screenOptions={{ headerShown: false }}
+        >
+          {/* Fluxo inicial */}
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Cadastrar" component={Cadastrar} />
 
-        {/* Após login, abre o menu principal */}
-        <Stack.Screen name="MainTabs" component={MainTabs} />
-      </Stack.Navigator>
-    </NavigationContainer>
+          {/* Após login, abre o menu principal */}
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ProjetosProvider>
   );
 }
