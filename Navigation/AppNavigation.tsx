@@ -97,12 +97,12 @@ function MainTabs() {
  */
 function PrincipalStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Principal"
-        component={Principal}
-        options={{ title: "Catálogo de Projetos" }}
-      />
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false, // 👈 oculta o cabeçalho padrão do Stack
+      }}
+    >
+      <Stack.Screen name="Principal" component={Principal} />
       <Stack.Screen
         name="Detalhes"
         component={Detalhes}
@@ -111,6 +111,7 @@ function PrincipalStack() {
     </Stack.Navigator>
   );
 }
+
 
 /**
  * 🚀 Navegação principal do aplicativo

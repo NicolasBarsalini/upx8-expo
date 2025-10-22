@@ -16,14 +16,9 @@ import house2 from "../assets/house2.jpg";
 export default function Principal({ navigation }: any) {
   const { width } = useWindowDimensions();
 
-  // espaçamento base
   const GAP = width < 400 ? 10 : 14;
-  // padding lateral
   const SIDE_PADDING = width < 400 ? 10 : 16;
-
-  // calcula largura do card dinamicamente
-  const CARD_WIDTH =
-    (width - SIDE_PADDING * 2 - GAP) / 2; // sempre cabe 2 colunas justas
+  const CARD_WIDTH = (width - SIDE_PADDING * 2 - GAP) / 2;
 
   const models = [
     {
@@ -54,27 +49,6 @@ export default function Principal({ navigation }: any) {
       rooms: "40m²",
       area: "2 Estações",
     },
-        {
-      id: 5,
-      name: "Escritório Compacto",
-      image: house1,
-      rooms: "40m²",
-      area: "2 Estações",
-    },
-        {
-      id: 6,
-      name: "Escritório Compacto",
-      image: house2,
-      rooms: "40m²",
-      area: "2 Estações",
-    },
-        {
-      id: 7,
-      name: "Escritório Compacto",
-      image: house1,
-      rooms: "40m²",
-      area: "2 Estações",
-    },
   ];
 
   const renderCard = ({ item }: any) => (
@@ -95,12 +69,25 @@ export default function Principal({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho */}
+      {/* Cabeçalho aprimorado */}
+      <View style={styles.topBar}>
+        <View style={styles.logoContainer}>
+          <Ionicons name="cube-outline" size={28} color="#2E8376" />
+          <Text style={styles.appTitle}>ArchiViewAR</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => navigation.navigate("Perfil")}
+        >
+          <Ionicons name="person-circle-outline" size={30} color="#2E8376" />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Catálogo de Projetos</Text>
       </View>
 
-      {/* Grade com padding e gap adaptativos */}
       <FlatList
         data={models}
         renderItem={renderCard}
@@ -124,12 +111,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
   },
+  topBar: {
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  appTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#2E8376",
+    marginLeft: 8,
+  },
+  profileButton: {
+    padding: 4,
+  },
   header: {
     backgroundColor: "#fff",
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e5e5",
+    borderBottomColor: "#E5E5E5",
   },
   headerTitle: {
     fontSize: 20,
