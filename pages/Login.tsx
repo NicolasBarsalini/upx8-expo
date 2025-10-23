@@ -8,6 +8,7 @@ import {
   TextInput,
   Platform,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 
@@ -18,6 +19,7 @@ export default function Login({ navigation }: any) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   // ---------- GOOGLE AUTH ----------
   const clientId =
@@ -45,7 +47,6 @@ export default function Login({ navigation }: any) {
     const emailValido = "pedro@gmail.com";
     const senhaValida = "1234";
 
-    // Limpa erro anterior
     setErro("");
 
     if (email.trim() === "" || senha.trim() === "") {
@@ -87,13 +88,36 @@ export default function Login({ navigation }: any) {
           autoCapitalize="none"
         />
 
-        <TextInput
-          style={[styles.input, erro && { borderColor: "#E53935" }]}
-          placeholder="Senha"
-          secureTextEntry
-          value={senha}
-          onChangeText={setSenha}
-        />
+        {/* Campo de senha com botão 👁️ */}
+        <View
+          style={[styles.passwordContainer, erro && { borderColor: "#E53935" }]}
+        >
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Senha"
+            secureTextEntry={!mostrarSenha}
+            value={senha}
+            onChangeText={setSenha}
+          />
+          <TouchableOpacity
+            onPress={() => setMostrarSenha(!mostrarSenha)}
+            style={styles.eyeButton}
+          >
+            <Ionicons
+              name={mostrarSenha ? "eye-off-outline" : "eye-outline"}
+              size={22}
+              color="#666"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Esqueci minha senha */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("RecuperarSenha")}
+          style={styles.forgotButton}
+        >
+          <Text style={styles.forgotText}>Esqueci minha senha</Text>
+        </TouchableOpacity>
 
         {erro ? <Text style={styles.errorText}>{erro}</Text> : null}
 
@@ -152,7 +176,7 @@ const styles = StyleSheet.create({
   },
   form: {
     paddingHorizontal: 30,
-    gap: 12,
+    gap: 10,
   },
   input: {
     backgroundColor: "#fff",
@@ -164,12 +188,42 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#000",
   },
+  passwordContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingRight: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    fontSize: 15,
+    color: "#000",
+  },
+  eyeButton: {
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+  },
+  forgotButton: {
+    alignSelf: "flex-end",
+    marginTop: 2,
+    marginBottom: 6,
+  },
+  forgotText: {
+    color: "#2E8376",
+    fontSize: 14,
+    fontWeight: "500",
+  },
   buttonGreen: {
     backgroundColor: "#2E8376",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 6,
   },
   buttonGreenText: {
     fontSize: 16,
@@ -209,7 +263,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: "#E53935",
     fontSize: 14,
-    marginTop: 2,
+    marginTop: 4,
     textAlign: "center",
     fontWeight: "500",
   },

@@ -13,6 +13,7 @@ import Principal from "../pages/Principal";
 import Detalhes from "../pages/Detalhes";
 import CadastrarProjeto from "../pages/CadastrarProjeto";
 import Perfil from "../pages/Perfil";
+import RecuperarSenha from "../pages/RecuperarSenha";
 
 // Importa o contexto global de projetos
 import { ProjetosProvider } from "../context/ProjetosContext";
@@ -133,6 +134,7 @@ export default function AppNavigation() {
           {/* Fluxo inicial */}
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Cadastrar" component={Cadastrar} />
+          <Stack.Screen name="RecuperarSenha" component={RecuperarSenha} />
 
           {/* Após login, abre o menu principal */}
           <Stack.Screen name="MainTabs" component={MainTabs} />
