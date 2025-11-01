@@ -3,11 +3,12 @@ import React, { createContext, useContext, useState } from "react";
 type Projeto = {
   id: number;
   name: string;
-  image: any; // pode ser require() ou string
+  image: any;            // require(...) ou string
   info: string;
   descricao: string;
   fbx?: string;
   dae?: string;
+  modelUrl?: string;     // glb/gltf recomendado
 };
 
 type ProjetosContextType = {

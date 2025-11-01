@@ -7,27 +7,40 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "scheme": "upx8",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "O aplicativo precisa acessar a câmera para leitura de QR Codes e renderização de modelos em Realidade Aumentada (AR).",
+        "NSPhotoLibraryUsageDescription": "Permita que o Upx8 acesse suas fotos para salvar ou importar imagens.",
+        "NSPhotoLibraryAddUsageDescription": "Permita que o Upx8 salve imagens renderizadas.",
+        "NSMicrophoneUsageDescription": "Permita que o Upx8 use o microfone se necessário em experiências AR interativas."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": ["CAMERA"],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [{ "scheme": "upx8", "host": "ar" }],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.Upx8"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-web-browser"
-    ]
+    }
   }
 }

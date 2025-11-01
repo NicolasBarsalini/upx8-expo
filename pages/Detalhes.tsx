@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Share,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useProjetos } from "../context/ProjetosContext";
+import QRCode from "react-native-qrcode-svg";
+import * as Linking from "expo-linking";
 
 export default function Detalhes({ route, navigation }: any) {
   const { model } = route.params || {};
@@ -53,6 +56,27 @@ export default function Detalhes({ route, navigation }: any) {
     );
   };
 
+  // ✅ link fixo e universal (independente de ambiente)
+  const deepLink = useMemo(() => {
+    const scheme = "upx8://";
+    const projectId = encodeURIComponent(String(model?.id || ""));
+    return `${scheme}ar?projectId=${projectId}`;
+  }, [model?.id]);
+
+  // ✅ abrir AR localmente
+  const abrirAR = () => navigation.navigate("ARViewer", { projectId: model.id });
+
+  // ✅ compartilhar link
+  const compartilharLink = async () => {
+    try {
+      await Share.share({
+        message: `Veja este projeto em Realidade Aumentada:\n${deepLink}`,
+      });
+    } catch (error) {
+      console.warn("Erro ao compartilhar link:", error);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
       {/* Cabeçalho */}
@@ -64,15 +88,12 @@ export default function Detalhes({ route, navigation }: any) {
         <View style={{ width: 26 }} />
       </View>
 
-      {/* Conteúdo */}
       <ScrollView contentContainerStyle={styles.content}>
         {/* Imagem */}
         {model.image && (
           <Image
             source={
-              typeof model.image === "string"
-                ? { uri: model.image }
-                : model.image
+              typeof model.image === "string" ? { uri: model.image } : model.image
             }
             style={styles.projectImage}
           />
@@ -83,13 +104,9 @@ export default function Detalhes({ route, navigation }: any) {
 
         {/* Informações */}
         <View style={styles.infoBox}>
-          <Ionicons
-            name="information-circle-outline"
-            size={18}
-            color="#2E8376"
-          />
+          <Ionicons name="information-circle-outline" size={18} color="#2E8376" />
           <Text style={styles.infoText}>
-            {model.info || "Sem informações"}
+            {model.info || "Sem informações adicionais"}
           </Text>
         </View>
 
@@ -99,30 +116,29 @@ export default function Detalhes({ route, navigation }: any) {
           {model.descricao || "Nenhuma descrição adicionada."}
         </Text>
 
-        {/* Arquivos */}
-        {(model.fbx || model.dae) && (
-          <>
-            <Text style={styles.sectionTitle}>Arquivos do Projeto</Text>
-            {model.fbx && (
-              <Text style={styles.fileText}>
-                <Ionicons name="cube-outline" size={16} color="#2E8376" /> FBX:{" "}
-                {model.fbx.split("/").pop()}
-              </Text>
-            )}
-            {model.dae && (
-              <Text style={styles.fileText}>
-                <Ionicons
-                  name="cloud-upload-outline"
-                  size={16}
-                  color="#2E8376"
-                />{" "}
-                DAE: {model.dae.split("/").pop()}
-              </Text>
-            )}
-          </>
-        )}
+        {/* QR Code */}
+        <Text style={styles.sectionTitle}>QR Code do Projeto</Text>
+        <View style={styles.qrBox}>
+          <QRCode value={deepLink} size={160} color="#2E8376" />
+          <Text style={styles.qrHint}>
+            Escaneie este QR com outro dispositivo para abrir o projeto em AR.
+          </Text>
+          <Text style={styles.qrLink}>{deepLink}</Text>
 
-        {/* Botões */}
+          {/* botão de compartilhar */}
+          <TouchableOpacity style={styles.shareButton} onPress={compartilharLink}>
+            <Ionicons name="share-outline" size={18} color="#fff" />
+            <Text style={styles.shareText}>Compartilhar link</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Botão: Abrir em AR */}
+        <TouchableOpacity style={styles.arButton} onPress={abrirAR}>
+          <Ionicons name="cube-outline" size={20} color="#fff" />
+          <Text style={styles.arText}>Ver em Realidade Aumentada</Text>
+        </TouchableOpacity>
+
+        {/* Botões padrão */}
         <TouchableOpacity style={styles.editButton} onPress={editarProjeto}>
           <Ionicons name="create-outline" size={20} color="#fff" />
           <Text style={styles.editText}>Editar Projeto</Text>
@@ -200,16 +216,63 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     marginBottom: 20,
   },
-  fileText: {
+  qrBox: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginBottom: 16,
+  },
+  qrHint: {
+    marginTop: 10,
+    fontSize: 13,
+    color: "#555",
+    textAlign: "center",
+  },
+  qrLink: {
+    marginTop: 6,
+    fontSize: 12,
+    color: "#2E8376",
+    textAlign: "center",
+  },
+  shareButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2E8376",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    marginTop: 12,
+  },
+  shareText: {
+    color: "#fff",
     fontSize: 14,
-    color: "#444",
-    marginTop: 4,
+    fontWeight: "600",
+    marginLeft: 6,
+  },
+  arButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#2E8376",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  arText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 6,
   },
   editButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#2E8376",
+    backgroundColor: "#4CAF50",
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 10,
@@ -228,6 +291,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 10,
+    marginBottom: 30,
   },
   deleteText: {
     color: "#fff",

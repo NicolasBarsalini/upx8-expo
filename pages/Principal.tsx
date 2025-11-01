@@ -9,10 +9,10 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useProjetos } from "../context/ProjetosContext"; // 👈 Importa o contexto
+import { useProjetos } from "../context/ProjetosContext";
 
 export default function Principal({ navigation }: any) {
-  const { projetos } = useProjetos(); // 👈 Usa o estado global
+  const { projetos } = useProjetos();
   const { width } = useWindowDimensions();
 
   const GAP = width < 400 ? 10 : 14;
@@ -28,8 +28,8 @@ export default function Principal({ navigation }: any) {
       <Image
         source={
           typeof item.image === "string"
-            ? { uri: item.image } // imagens vindas do cadastro
-            : item.image // imagens locais
+            ? { uri: item.image }
+            : item.image
         }
         style={styles.image}
       />
@@ -42,26 +42,38 @@ export default function Principal({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho aprimorado */}
+      {/* 🔝 Topo com logo e botão de perfil */}
       <View style={styles.topBar}>
         <View style={styles.logoContainer}>
           <Ionicons name="cube-outline" size={28} color="#2E8376" />
           <Text style={styles.appTitle}>ArchiViewAR</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() => navigation.navigate("Perfil")}
-        >
-          <Ionicons name="person-circle-outline" size={30} color="#2E8376" />
-        </TouchableOpacity>
+        <View style={styles.topActions}>
+          {/* ✅ Botão para abrir o scanner de QR */}
+          <TouchableOpacity
+            style={styles.qrButton}
+            onPress={() => navigation.navigate("QRScanner")}
+          >
+            <Ionicons name="qr-code-outline" size={22} color="#fff" />
+          </TouchableOpacity>
+
+          {/* 👤 Botão de perfil */}
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() => navigation.navigate("Perfil")}
+          >
+            <Ionicons name="person-circle-outline" size={30} color="#2E8376" />
+          </TouchableOpacity>
+        </View>
       </View>
 
+      {/* Cabeçalho */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Catálogo de Projetos</Text>
       </View>
 
-      {/* Lista de projetos dinâmica */}
+      {/* Lista de projetos */}
       <FlatList
         data={projetos}
         renderItem={renderCard}
@@ -116,6 +128,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#2E8376",
     marginLeft: 8,
+  },
+  topActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  qrButton: {
+    backgroundColor: "#2E8376",
+    padding: 8,
+    borderRadius: 8,
   },
   profileButton: {
     padding: 4,
