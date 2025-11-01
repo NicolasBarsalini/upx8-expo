@@ -6,11 +6,52 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useProjetos } from "../context/ProjetosContext";
 
 export default function Detalhes({ route, navigation }: any) {
-  const { model } = route.params; // 👈 dados vindos do card
+  const { model } = route.params || {};
+  const { removerProjeto } = useProjetos();
+
+  if (!model) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Projeto não encontrado.</Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate("Principal")}
+        >
+          <Ionicons name="arrow-back-outline" size={20} color="#fff" />
+          <Text style={styles.backText}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const editarProjeto = () => {
+    navigation.navigate("CadastrarProjeto", { editar: true, projeto: model });
+  };
+
+  const excluirProjeto = () => {
+    Alert.alert(
+      "Excluir Projeto",
+      `Tem certeza que deseja excluir o projeto "${model.name}"?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: () => {
+            removerProjeto(model.id);
+            Alert.alert("Removido", "O projeto foi excluído com sucesso.");
+            navigation.navigate("Principal");
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
@@ -20,14 +61,21 @@ export default function Detalhes({ route, navigation }: any) {
           <Ionicons name="arrow-back-outline" size={26} color="#2E8376" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Detalhes do Projeto</Text>
-        <View style={{ width: 26 }} /> {/* espaçamento p/ centralizar */}
+        <View style={{ width: 26 }} />
       </View>
 
       {/* Conteúdo */}
       <ScrollView contentContainerStyle={styles.content}>
         {/* Imagem */}
         {model.image && (
-          <Image source={{ uri: model.image }} style={styles.projectImage} />
+          <Image
+            source={
+              typeof model.image === "string"
+                ? { uri: model.image }
+                : model.image
+            }
+            style={styles.projectImage}
+          />
         )}
 
         {/* Título */}
@@ -35,8 +83,14 @@ export default function Detalhes({ route, navigation }: any) {
 
         {/* Informações */}
         <View style={styles.infoBox}>
-          <Ionicons name="information-circle-outline" size={18} color="#2E8376" />
-          <Text style={styles.infoText}>{model.info || "Sem informações"}</Text>
+          <Ionicons
+            name="information-circle-outline"
+            size={18}
+            color="#2E8376"
+          />
+          <Text style={styles.infoText}>
+            {model.info || "Sem informações"}
+          </Text>
         </View>
 
         {/* Descrição */}
@@ -57,12 +111,27 @@ export default function Detalhes({ route, navigation }: any) {
             )}
             {model.dae && (
               <Text style={styles.fileText}>
-                <Ionicons name="cloud-upload-outline" size={16} color="#2E8376" />{" "}
+                <Ionicons
+                  name="cloud-upload-outline"
+                  size={16}
+                  color="#2E8376"
+                />{" "}
                 DAE: {model.dae.split("/").pop()}
               </Text>
             )}
           </>
         )}
+
+        {/* Botões */}
+        <TouchableOpacity style={styles.editButton} onPress={editarProjeto}>
+          <Ionicons name="create-outline" size={20} color="#fff" />
+          <Text style={styles.editText}>Editar Projeto</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.deleteButton} onPress={excluirProjeto}>
+          <Ionicons name="trash-outline" size={20} color="#fff" />
+          <Text style={styles.deleteText}>Excluir Projeto</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -135,5 +204,60 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#444",
     marginTop: 4,
+  },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#2E8376",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  editText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 6,
+  },
+  deleteButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#E53935",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  deleteText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 6,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F5F5F5",
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "#444",
+    marginBottom: 12,
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2E8376",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  backText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 15,
+    marginLeft: 6,
   },
 });

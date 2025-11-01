@@ -1,22 +1,25 @@
-// src/context/ProjetosContext.tsx
 import React, { createContext, useContext, useState } from "react";
 
 type Projeto = {
   id: number;
   name: string;
-  image: string | null;
+  image: any; // pode ser require() ou string
   info: string;
   descricao: string;
+  fbx?: string;
+  dae?: string;
 };
 
 type ProjetosContextType = {
   projetos: Projeto[];
   adicionarProjeto: (projeto: Projeto) => void;
+  removerProjeto: (id: number) => void;
 };
 
 const ProjetosContext = createContext<ProjetosContextType>({
   projetos: [],
   adicionarProjeto: () => {},
+  removerProjeto: () => {},
 });
 
 export function ProjetosProvider({ children }: { children: React.ReactNode }) {
@@ -41,8 +44,23 @@ export function ProjetosProvider({ children }: { children: React.ReactNode }) {
     setProjetos((prev) => [...prev, { ...projeto, id: Date.now() }]);
   };
 
+  const removerProjeto = (id: number) => {
+    setProjetos((prev) => {
+      const atualizados = prev.filter((p) => Number(p.id) !== Number(id));
+      console.log(
+        "Removendo projeto ID:",
+        id,
+        "→ total após remoção:",
+        atualizados.length
+      );
+      return atualizados;
+    });
+  };
+
   return (
-    <ProjetosContext.Provider value={{ projetos, adicionarProjeto }}>
+    <ProjetosContext.Provider
+      value={{ projetos, adicionarProjeto, removerProjeto }}
+    >
       {children}
     </ProjetosContext.Provider>
   );
