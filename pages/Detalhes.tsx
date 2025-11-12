@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Share,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useProjetos } from "../context/ProjetosContext";
@@ -53,6 +54,28 @@ export default function Detalhes({ route, navigation }: any) {
     );
   };
 
+  const compartilharProjeto = async () => {
+    try {
+      const message = `
+🏗️ *${model.name}*
+
+📋 ${model.descricao || "Sem descrição adicionada."}
+
+📐 Informações: ${model.info || "Sem informações"}
+      
+${model.fbx ? `📦 Arquivo FBX: ${model.fbx.split("/").pop()}` : ""}
+${model.dae ? `📁 Arquivo DAE: ${model.dae.split("/").pop()}` : ""}
+`;
+
+      await Share.share({
+        title: `Projeto: ${model.name}`,
+        message,
+      });
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível compartilhar o projeto.");
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "#F5F5F5" }}>
       {/* Cabeçalho */}
@@ -66,7 +89,6 @@ export default function Detalhes({ route, navigation }: any) {
 
       {/* Conteúdo */}
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Imagem */}
         {model.image && (
           <Image
             source={
@@ -78,10 +100,8 @@ export default function Detalhes({ route, navigation }: any) {
           />
         )}
 
-        {/* Título */}
         <Text style={styles.title}>{model.name}</Text>
 
-        {/* Informações */}
         <View style={styles.infoBox}>
           <Ionicons
             name="information-circle-outline"
@@ -93,13 +113,11 @@ export default function Detalhes({ route, navigation }: any) {
           </Text>
         </View>
 
-        {/* Descrição */}
         <Text style={styles.sectionTitle}>Descrição</Text>
         <Text style={styles.description}>
           {model.descricao || "Nenhuma descrição adicionada."}
         </Text>
 
-        {/* Arquivos */}
         {(model.fbx || model.dae) && (
           <>
             <Text style={styles.sectionTitle}>Arquivos do Projeto</Text>
@@ -125,12 +143,21 @@ export default function Detalhes({ route, navigation }: any) {
         {/* Botões */}
         <TouchableOpacity style={styles.editButton} onPress={editarProjeto}>
           <Ionicons name="create-outline" size={20} color="#fff" />
-          <Text style={styles.editText}>Editar Projeto</Text>
+          <Text style={styles.editText}>Abrir em RA</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.deleteButton} onPress={excluirProjeto}>
           <Ionicons name="trash-outline" size={20} color="#fff" />
           <Text style={styles.deleteText}>Excluir Projeto</Text>
+        </TouchableOpacity>
+
+        {/* 🟢 Botão de Compartilhar */}
+        <TouchableOpacity
+          style={styles.shareButton}
+          onPress={compartilharProjeto}
+        >
+          <Ionicons name="share-social-outline" size={20} color="#fff" />
+          <Text style={styles.shareText}>Compartilhar Projeto</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -230,6 +257,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   deleteText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 6,
+  },
+  shareButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    marginBottom: 30,
+  },
+  shareText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,

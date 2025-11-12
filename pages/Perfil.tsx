@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 export default function Perfil() {
   const user = {
     name: "Pedro Henrique",
-    email: "Pedro@email.com",
+    email: "Pedro@gmail.com",
     phone: "(11) 98765-4321",
     gender: "Masculino",
     birth: "10/04/2004",

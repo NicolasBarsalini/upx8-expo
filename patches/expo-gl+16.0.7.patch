@@ -1,0 +1,20 @@
+diff --git a/node_modules/expo-gl/build/GLView.js b/node_modules/expo-gl/build/GLView.js
+index 6e1a2e0..a3b2cc1 100644
+--- a/node_modules/expo-gl/build/GLView.js
++++ b/node_modules/expo-gl/build/GLView.js
+@@ -160,7 +160,12 @@ export default class GLView extends React.Component {
+     const { onContextCreate } = this.props;
+     if (onContextCreate) {
+       const gl = new ExpoWebGLRenderingContext(expoGlObject);
+-      onContextCreate(gl);
++      try {
++        onContextCreate(gl);
++      } catch (e) {
++        console.warn(
++          "⚠️ [expo-gl patch] GLView onContextCreate error capturado:",
++          e?.message || e
++        );
++      }
+     }
+   }
+npx patch-package expo-gl
