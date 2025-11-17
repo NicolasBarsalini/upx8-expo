@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,33 +7,33 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  Platform,
-} from 'react-native';
-import CheckBox from '@react-native-community/checkbox'; 
-// Se ainda não instalou: npx expo install @react-native-community/checkbox
+  Pressable,
+} from "react-native";
 
 export default function Cadastrar({ navigation }: any) {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
   const [aceitouTermos, setAceitouTermos] = useState(false);
 
   const handleCadastro = () => {
     if (!email || !senha || !confirmarSenha) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
-      return;
-    }
-    if (senha !== confirmarSenha) {
-      Alert.alert('Erro', 'As senhas não coincidem.');
-      return;
-    }
-    if (!aceitouTermos) {
-      Alert.alert('Atenção', 'Você precisa aceitar os termos de uso.');
+      Alert.alert("Erro", "Por favor, preencha todos os campos.");
       return;
     }
 
-    Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-    navigation.navigate('Login');
+    if (senha !== confirmarSenha) {
+      Alert.alert("Erro", "As senhas não coincidem.");
+      return;
+    }
+
+    if (!aceitouTermos) {
+      Alert.alert("Atenção", "Você precisa aceitar os termos de uso.");
+      return;
+    }
+
+    Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
+    navigation.navigate("Login");
   };
 
   return (
@@ -46,7 +46,7 @@ export default function Cadastrar({ navigation }: any) {
         </Text>
       </View>
 
-      {/* Formulário */}
+      {/* Form */}
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -77,47 +77,48 @@ export default function Cadastrar({ navigation }: any) {
         />
 
         {/* Termos */}
-        <View style={styles.termosContainer}>
-          {Platform.OS === 'web' ? (
-            // Fallback para web
-            <TouchableOpacity
-              onPress={() => setAceitouTermos(!aceitouTermos)}
-              style={[
-                styles.checkboxWeb,
-                aceitouTermos && { backgroundColor: '#64b6ac' },
-              ]}
-            />
-          ) : (
-            <CheckBox
-              value={aceitouTermos}
-              onValueChange={setAceitouTermos}
-              tintColors={{ true: '#64b6ac', false: '#888' }}
-            />
-          )}
+        <Pressable
+          style={styles.termosContainer}
+          onPress={() => setAceitouTermos(!aceitouTermos)}
+        >
+          <View
+            style={[
+              styles.checkboxCustom,
+              aceitouTermos && styles.checkboxChecked,
+            ]}
+          >
+            {aceitouTermos && (
+              <Text style={styles.checkboxMark}>✓</Text>
+            )}
+          </View>
+
           <Text style={styles.termosText}>
-            Li e aceito os{' '}
+            Li e aceito os{" "}
             <Text
               style={styles.linkTermos}
               onPress={() =>
                 Alert.alert(
-                  'Termos de Uso',
-                  'Ao se cadastrar, você concorda em usar o aplicativo de forma responsável, proteger suas credenciais e respeitar as regras da comunidade.'
+                  "Termos de Uso",
+                  "Ao se cadastrar, você concorda em proteger suas credenciais e utilizar o aplicativo de forma responsável."
                 )
               }
             >
               Termos de Uso
-            </Text>.
+            </Text>
+            .
           </Text>
-        </View>
+        </Pressable>
 
-        {/* Botão Cadastrar */}
+        {/* Botão cadastrar */}
         <TouchableOpacity style={styles.buttonGreen} onPress={handleCadastro}>
           <Text style={styles.buttonGreenText}>Cadastrar</Text>
         </TouchableOpacity>
 
         {/* Voltar */}
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.voltarText}>Já tem conta? Voltar para Login</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.voltarText}>
+            Já possui conta? Voltar para Login
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -127,25 +128,24 @@ export default function Cadastrar({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#f2f2f2',
-    justifyContent: 'space-between',
+    backgroundColor: "#f2f2f2",
     paddingVertical: 40,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 40,
     marginBottom: 20,
   },
   logo: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#000',
+    fontWeight: "700",
+    color: "#000",
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#333',
-    textAlign: 'center',
+    color: "#333",
+    textAlign: "center",
     lineHeight: 22,
     paddingHorizontal: 40,
   },
@@ -154,55 +154,69 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 6,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
   },
+
+  /* Checkbox customizado */
   termosContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
     marginVertical: 10,
-    gap: 8,
+  },
+  checkboxCustom: {
+    width: 22,
+    height: 22,
+    borderWidth: 2,
+    borderColor: "#64b6ac",
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  checkboxChecked: {
+    backgroundColor: "#64b6ac",
+  },
+  checkboxMark: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: -2,
   },
   termosText: {
     flex: 1,
     fontSize: 14,
-    color: '#333',
+    color: "#333",
     lineHeight: 18,
   },
   linkTermos: {
-    color: '#64b6ac',
-    textDecorationLine: 'underline',
+    color: "#64b6ac",
+    textDecorationLine: "underline",
   },
-  checkboxWeb: {
-    width: 20,
-    height: 20,
-    borderWidth: 1,
-    borderColor: '#888',
-    borderRadius: 4,
-    backgroundColor: '#fff',
-  },
+
   buttonGreen: {
-    backgroundColor: '#64b6ac',
+    backgroundColor: "#64b6ac",
     paddingVertical: 14,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonGreenText: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: '500',
+    color: "#fff",
+    fontWeight: "600",
   },
   voltarText: {
     fontSize: 14,
-    color: '#64b6ac',
-    textAlign: 'center',
+    color: "#64b6ac",
+    textAlign: "center",
     marginTop: 12,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
 });
