@@ -14,12 +14,44 @@ import Detalhes from "../pages/Detalhes";
 import CadastrarProjeto from "../pages/CadastrarProjeto";
 import Perfil from "../pages/Perfil";
 import RecuperarSenha from "../pages/RecuperarSenha";
+import ARViewer from "../pages/ARViewer"; // 👈 NOVA TELA
 
 // Importa o contexto global de projetos
 import { ProjetosProvider } from "../context/ProjetosContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+/**
+ * 🧭 Stack interno da aba "Início"
+ * permite navegação entre Principal, Detalhes e ARViewer
+ */
+function PrincipalStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false, // oculta o cabeçalho padrão do Stack
+      }}
+    >
+      <Stack.Screen name="Principal" component={Principal} />
+      <Stack.Screen
+        name="Detalhes"
+        component={Detalhes}
+        options={{ title: "Detalhes do Projeto" }}
+      />
+      <Stack.Screen
+        name="ARViewer"
+        component={ARViewer}
+        options={{
+          title: "Visualização AR",
+          headerShown: true,
+          headerStyle: { backgroundColor: "#fff" },
+          headerTintColor: "#2E8376",
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 /**
  * 📱 Abas principais (Início, +, Perfil)
@@ -96,27 +128,6 @@ function MainTabs() {
         }}
       />
     </Tab.Navigator>
-  );
-}
-
-/**
- * 🧩 Stack interno da aba "Início"
- * permite navegação entre Principal e Detalhes
- */
-function PrincipalStack() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false, // oculta o cabeçalho padrão do Stack
-      }}
-    >
-      <Stack.Screen name="Principal" component={Principal} />
-      <Stack.Screen
-        name="Detalhes"
-        component={Detalhes}
-        options={{ title: "Detalhes do Projeto" }}
-      />
-    </Stack.Navigator>
   );
 }
 

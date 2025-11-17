@@ -140,18 +140,32 @@ ${model.dae ? `📁 Arquivo DAE: ${model.dae.split("/").pop()}` : ""}
           </>
         )}
 
-        {/* Botões */}
-        <TouchableOpacity style={styles.editButton} onPress={editarProjeto}>
-          <Ionicons name="create-outline" size={20} color="#fff" />
-          <Text style={styles.editText}>Abrir em RA</Text>
-        </TouchableOpacity>
+        {/* 🔹 Botão de RA */}
+       <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => {
+          // URL do modelo 3D hospedado no Firebase
+          const modelUrl = "https://archivieew.web.app/modelos/model.glb";
 
+          // URL do visualizador AR hospedado no Firebase
+          const viewerUrl = `https://archivieew.web.app/ar-view.html?model=${encodeURIComponent(modelUrl)}`;
+
+          // Navega até a tela que abre a WebView
+          navigation.navigate("ARViewer", { url: viewerUrl });
+        }}
+      >
+        <Ionicons name="cube-outline" size={20} color="#fff" />
+        <Text style={styles.editText}>Abrir em RA</Text>
+      </TouchableOpacity>
+
+
+        {/* 🔴 Excluir Projeto */}
         <TouchableOpacity style={styles.deleteButton} onPress={excluirProjeto}>
           <Ionicons name="trash-outline" size={20} color="#fff" />
           <Text style={styles.deleteText}>Excluir Projeto</Text>
         </TouchableOpacity>
 
-        {/* 🟢 Botão de Compartilhar */}
+        {/* 🟢 Compartilhar */}
         <TouchableOpacity
           style={styles.shareButton}
           onPress={compartilharProjeto}
