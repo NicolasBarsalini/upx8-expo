@@ -45,6 +45,30 @@ export default function Detalhes({ route, navigation }: any) {
         });
       };
 
+      const abrirARCozinha = () => {
+          const modelUrl = "https://archivieew.web.app/modelos/cozinha.glb";
+
+          const viewerUrl =
+            "https://archivieew.web.app/ar-view.html?model=" +
+            encodeURIComponent(modelUrl);
+
+          Linking.openURL(viewerUrl).catch(() => {
+            Alert.alert("Erro", "Não foi possível abrir o modo AR (cozinha).");
+          });
+        };
+
+         const abrirARQuarto = () => {
+          const modelUrl = "https://archivieew.web.app/modelos/quarto.glb";
+
+          const viewerUrl =
+            "https://archivieew.web.app/ar-view.html?model=" +
+            encodeURIComponent(modelUrl);
+
+          Linking.openURL(viewerUrl).catch(() => {
+            Alert.alert("Erro", "Não foi possível abrir o modo AR (cozinha).");
+          });
+        };
+
 
   const editarProjeto = () => {
     navigation.navigate("CadastrarProjeto", { editar: true, projeto: model });
@@ -131,14 +155,28 @@ ${model.dae ? `📁 Arquivo DAE: ${model.dae.split("/").pop()}` : ""}
           {model.descricao || "Nenhuma descrição adicionada."}
         </Text>
 
-        {/* BOTÃO DE RA - SCENE VIEWER */}
-        <TouchableOpacity style={styles.editButton} onPress={abrirAR}>
-          <Ionicons name="cube-outline" size={20} color="#fff" />
-          <Text style={styles.editText}>Abrir em RA</Text>
-        </TouchableOpacity>
+          {/* BOTÃO CASINHA — aparece apenas no card "Casa Moderna" */}
+          {model.name === "Casa Moderna" && (
+            <TouchableOpacity style={styles.editButton} onPress={abrirAR}>
+              <Ionicons name="cube-outline" size={20} color="#fff" />
+              <Text style={styles.editText}>Visualizar em RA</Text>
+            </TouchableOpacity>
+          )}
 
+          {/* BOTÃO COZINHA — aparece apenas no card "Apartamento" */}
+          {model.name === "Cozinha Minimalista" && (
+            <TouchableOpacity style={styles.editButton} onPress={abrirARCozinha}>
+              <Ionicons name="cube-outline" size={20} color="#fff" />
+              <Text style={styles.editText}>Visualizar em RA</Text>
+            </TouchableOpacity>
+          )}
 
-
+          {model.name === "Quarto Infantil" && (
+            <TouchableOpacity style={styles.editButton} onPress={abrirARQuarto}>
+              <Ionicons name="cube-outline" size={20} color="#fff" />
+              <Text style={styles.editText}>Visualizar em RA</Text>
+            </TouchableOpacity>
+          )}
 
         {/* EXCLUIR */}
         <TouchableOpacity style={styles.deleteButton} onPress={excluirProjeto}>

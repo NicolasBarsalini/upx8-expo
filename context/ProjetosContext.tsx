@@ -29,16 +29,25 @@ export function ProjetosProvider({ children }: { children: React.ReactNode }) {
       name: "Casa Moderna",
       image: require("../assets/house1.jpg"),
       info: "3 Quartos | 120m²",
-      descricao: "Casa contemporânea com fachada moderna e áreas integradas.",
+      descricao: "Casa contemporânea miniatura traz um conceito arquitetônico simples e elegante, com estrutura leve, paredes bem definidas e aparência clean. Ideal para visualização rápida de volume, proporções e ambientação em AR, oferecendo uma base perfeita para estudos de layout e projeto.",
     },
     {
       id: 2,
-      name: "Apartamento Compacto",
+      name: "Cozinha Minimalista",
       image: require("../assets/house2.jpg"),
-      info: "2 Quartos | 80m²",
-      descricao: "Apartamento funcional e elegante para espaços reduzidos.",
+      info: "1 cozinha | 15m²",
+      descricao: "Esta cozinha minimalista apresenta um ambiente compacto e elegante, com armários embutidos, bancada funcional e superfícies de acabamento suave. O design prioriza organização, iluminação equilibrada e praticidade para espaços reduzidos, ideal para apartamentos modernos.",
+    },
+        {
+      id: 3,
+      name: "Quarto Infantil",
+      image: require("../assets/house2.jpg"),
+      info: "1 Quarto | 20m²",
+      descricao: "Este quarto minimalista apresenta um espaço aconchegante e equilibrado, composto por cama de design simples, luminárias pendentes, poltronas e mesa lateral em uma paleta suave e moderna. O estilo low poly traz leveza ao ambiente, destacando proporções e volumes de forma clara. Ideal para visualização rápida de interiores, demonstração de layout e experiências de AR em espaços compactos.",
     },
   ]);
+
+  
 
   const adicionarProjeto = (projeto: Projeto) => {
     setProjetos((prev) => [...prev, { ...projeto, id: Date.now() }]);
