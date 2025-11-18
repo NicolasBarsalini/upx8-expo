@@ -46,7 +46,7 @@ export default function Detalhes({ route, navigation }: any) {
       };
 
       const abrirARCozinha = () => {
-          const modelUrl = "https://archivieew.web.app/modelos/cozinha.glb";
+          const modelUrl = "https://archivieew.web.app/modelos/cozinha_6m_fixed.glb";
 
           const viewerUrl =
             "https://archivieew.web.app/ar-view.html?model=" +
@@ -58,7 +58,19 @@ export default function Detalhes({ route, navigation }: any) {
         };
 
          const abrirARQuarto = () => {
-          const modelUrl = "https://archivieew.web.app/modelos/quarto.glb";
+          const modelUrl = "https://archivieew.web.app/modelos/quarto6.glb";
+
+          const viewerUrl =
+            "https://archivieew.web.app/ar-view.html?model=" +
+            encodeURIComponent(modelUrl);
+
+          Linking.openURL(viewerUrl).catch(() => {
+            Alert.alert("Erro", "Não foi possível abrir o modo AR (cozinha).");
+          });
+        };
+
+          const abrirARParede = () => {
+          const modelUrl = "https://archivieew.web.app/modelos/parede_6m.glb";
 
           const viewerUrl =
             "https://archivieew.web.app/ar-view.html?model=" +
@@ -173,6 +185,13 @@ ${model.dae ? `📁 Arquivo DAE: ${model.dae.split("/").pop()}` : ""}
 
           {model.name === "Quarto Infantil" && (
             <TouchableOpacity style={styles.editButton} onPress={abrirARQuarto}>
+              <Ionicons name="cube-outline" size={20} color="#fff" />
+              <Text style={styles.editText}>Visualizar em RA</Text>
+            </TouchableOpacity>
+          )}
+
+            {model.name === "Modelo Parede" && (
+            <TouchableOpacity style={styles.editButton} onPress={abrirARParede}>
               <Ionicons name="cube-outline" size={20} color="#fff" />
               <Text style={styles.editText}>Visualizar em RA</Text>
             </TouchableOpacity>

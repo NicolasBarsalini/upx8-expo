@@ -41,9 +41,16 @@ export function ProjetosProvider({ children }: { children: React.ReactNode }) {
         {
       id: 3,
       name: "Quarto Infantil",
-      image: require("../assets/house2.jpg"),
+      image: require("../assets/house1.jpg"),
       info: "1 Quarto | 20m²",
       descricao: "Este quarto minimalista apresenta um espaço aconchegante e equilibrado, composto por cama de design simples, luminárias pendentes, poltronas e mesa lateral em uma paleta suave e moderna. O estilo low poly traz leveza ao ambiente, destacando proporções e volumes de forma clara. Ideal para visualização rápida de interiores, demonstração de layout e experiências de AR em espaços compactos.",
+    },
+            {
+      id: 4,
+      name: "Modelo Parede",
+      image: require("../assets/house2.jpg"),
+      info: "1 Parede de tijoles | 3m²",
+      descricao: "Modelo de parede em tijolos com dimensões realistas, criado para testes de ambientação, texturas e proporções em realidade aumentada. Perfeito para simulações rápidas de espaço, composição de ambiente e estudos de layout..",
     },
   ]);
 
