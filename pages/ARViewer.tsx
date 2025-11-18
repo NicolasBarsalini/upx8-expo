@@ -14,7 +14,7 @@ export default function ARViewer({ route }: any) {
       return false;
     }
 
-    // QuickLook (iOS)
+    // Quick Look (iOS)
     if (nextUrl.endsWith(".usdz")) {
       Linking.openURL(nextUrl).catch(() => {});
       return false;
@@ -34,16 +34,14 @@ export default function ARViewer({ route }: any) {
         javaScriptEnabled
         domStorageEnabled
         allowFileAccess
-        allowUniversalAccessFromFileURLs
         allowFileAccessFromFileURLs
+        allowUniversalAccessFromFileURLs
 
         allowsInlineMediaPlayback
         mediaPlaybackRequiresUserAction={false}
         mixedContentMode="always"
-        setSupportMultipleWindows
         androidHardwareAccelerationDisabled={false}
 
-        // Shadow DOM fix para model-viewer
         injectedJavaScriptBeforeContentLoaded={`window.customElements;`}
 
         startInLoadingState

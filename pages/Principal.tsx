@@ -46,7 +46,7 @@ export default function Principal({ navigation }: any) {
       <View style={styles.topBar}>
         <View style={styles.logoContainer}>
           <Ionicons name="cube-outline" size={28} color="#2E8376" />
-          <Text style={styles.appTitle}>ArchiViewAR</Text>
+          <Text style={styles.appTitle}>Espaço 3D.io</Text>
         </View>
 
         <TouchableOpacity

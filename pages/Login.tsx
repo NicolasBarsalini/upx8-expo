@@ -71,7 +71,7 @@ export default function Login({ navigation }: any) {
     <View style={styles.container}>
       {/* Logo e textos */}
       <View style={styles.header}>
-        <Text style={styles.logo}>ArchiViewAR</Text>
+        <Text style={styles.logo}>Espaço 3D.io</Text>
         <Text style={styles.subtitle}>
           Visualize seu futuro lar{"\n"}em realidade aumentada
         </Text>

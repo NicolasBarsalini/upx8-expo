@@ -3,23 +3,73 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+
   <title>Visualização AR</title>
 
   <!-- model-viewer oficial -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 
   <style>
-    html, body { margin:0; height:100%; background:#000; overflow:hidden; }
-    model-viewer { width:100%; height:100%; background:#000; }
-    #loading {
-      position:fixed; inset:0; display:flex; justify-content:center; align-items:center;
-      color:white; font-family:Arial; background:black; z-index:10;
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
     }
-    #loading.hide { opacity:0; pointer-events:none; }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: Arial;
+      background: black;
+      z-index: 10;
+      font-size: 18px;
+    }
+
+    #loading.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* botão AR */
+    #ar-button {
+      background-color: #2E8376;
+      border: none;
+      color: white;
+      padding: 12px 18px;
+      font-size: 16px;
+      border-radius: 8px;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      cursor: pointer;
+    }
+
+    #ar-prompt {
+      position: absolute;
+      left: 50%;
+      bottom: 90px;
+      transform: translateX(-50%);
+      opacity: 0.8;
+      z-index: 20;
+    }
   </style>
 </head>
 
 <body>
+
   <div id="loading">Carregando modelo…</div>
 
   <model-viewer id="viewer"
@@ -27,11 +77,19 @@
     ar-modes="scene-viewer webxr quick-look"
     camera-controls
     xr-environment
-    auto-rotate
-    autoplay
-    ar-placement="floor"
+    tone-mapping="neutral"
     shadow-intensity="1"
-    exposure="1.1">
+    auto-rotate
+    autoplay>
+
+    <button slot="ar-button" id="ar-button">
+      Ver em seu espaço
+    </button>
+
+    <div id="ar-prompt">
+      <img src="https://modelviewer.dev/shared-assets/icons/hand.png" width="60">
+    </div>
+
   </model-viewer>
 
   <script>
@@ -57,5 +115,6 @@
       console.error(e);
     });
   </script>
+
 </body>
 </html>

@@ -33,10 +33,9 @@ export default function Detalhes({ route, navigation }: any) {
     );
   }
 
- const abrirAR = () => {
+      const abrirAR = () => {
         const modelUrl = "https://archivieew.web.app/modelos/model.glb";
 
-        // Abre SEMPRE seu visualizador (que já contém model-viewer)
         const viewerUrl =
           "https://archivieew.web.app/ar-view.html?model=" +
           encodeURIComponent(modelUrl);
@@ -44,7 +43,7 @@ export default function Detalhes({ route, navigation }: any) {
         Linking.openURL(viewerUrl).catch(() => {
           Alert.alert("Erro", "Não foi possível abrir o modo AR.");
         });
-    };
+      };
 
 
   const editarProjeto = () => {
