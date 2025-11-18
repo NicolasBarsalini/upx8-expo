@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <body style="background:#000;color:#fff;font-size:20px;">
+    <script>
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      document.body.innerHTML = gl ? "WEBGL OK" : "WEBGL FALHOU";
+    </script>
+  </body>
+</html>

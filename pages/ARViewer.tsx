@@ -1,13 +1,51 @@
 import React from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, Linking } from "react-native";
 import { WebView } from "react-native-webview";
 
 export default function ARViewer({ route }: any) {
-  const { url } = route.params; // recebemos a URL da RA
+  const { url } = route.params;
+
+  const handleNav = (event: any) => {
+    const nextUrl = event.url;
+
+    // Scene Viewer (Android)
+    if (nextUrl.startsWith("intent://")) {
+      Linking.openURL(nextUrl).catch(() => {});
+      return false;
+    }
+
+    // QuickLook (iOS)
+    if (nextUrl.endsWith(".usdz")) {
+      Linking.openURL(nextUrl).catch(() => {});
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <WebView
         source={{ uri: url }}
+
+        onShouldStartLoadWithRequest={handleNav}
+
+        originWhitelist={["*"]}
+        javaScriptEnabled
+        domStorageEnabled
+        allowFileAccess
+        allowUniversalAccessFromFileURLs
+        allowFileAccessFromFileURLs
+
+        allowsInlineMediaPlayback
+        mediaPlaybackRequiresUserAction={false}
+        mixedContentMode="always"
+        setSupportMultipleWindows
+        androidHardwareAccelerationDisabled={false}
+
+        // Shadow DOM fix para model-viewer
+        injectedJavaScriptBeforeContentLoaded={`window.customElements;`}
+
         startInLoadingState
         renderLoading={() => (
           <View style={styles.loader}>
@@ -24,6 +62,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
   },
 });

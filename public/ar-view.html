@@ -2,69 +2,59 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <title>Visualização AR</title>
 
   <!-- model-viewer oficial -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 
   <style>
-    html, body { margin:0; height:100%; width:100%; background:#000; }
-    .wrap { position:fixed; inset:0; }
-    model-viewer { width:100%; height:100%; }
-    .loading {
-      position:absolute; inset:0; display:grid; place-items:center; color:#fff;
-      font:600 16px system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      background:linear-gradient(180deg,#0b0f14, #101820);
-      opacity:1; transition:opacity .3s ease;
+    html, body { margin:0; height:100%; background:#000; overflow:hidden; }
+    model-viewer { width:100%; height:100%; background:#000; }
+    #loading {
+      position:fixed; inset:0; display:flex; justify-content:center; align-items:center;
+      color:white; font-family:Arial; background:black; z-index:10;
     }
-    .loading.hide { opacity:0; pointer-events:none; }
+    #loading.hide { opacity:0; pointer-events:none; }
   </style>
 </head>
-<body>
-  <div class="wrap">
-    <model-viewer id="viewer"
-      ar
-      ar-modes="webxr scene-viewer quick-look"
-      camera-controls
-      autoplay
-      auto-rotate
-      exposure="1"
-      shadow-intensity="0.6"
-      style="background:#000">
-    </model-viewer>
 
-    <div id="loading" class="loading">Carregando modelo…</div>
-  </div>
+<body>
+  <div id="loading">Carregando modelo…</div>
+
+  <model-viewer id="viewer"
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    camera-controls
+    xr-environment
+    auto-rotate
+    autoplay
+    ar-placement="floor"
+    shadow-intensity="1"
+    exposure="1.1">
+  </model-viewer>
 
   <script>
-    const $viewer = document.getElementById('viewer');
-    const $loading = document.getElementById('loading');
-    const qs = new URLSearchParams(location.search);
+    const viewer = document.querySelector("#viewer");
+    const loading = document.querySelector("#loading");
 
-    const src = qs.get('model');           // .glb / .gltf
-    const ios = qs.get('ios');             // .usdz (opcional mas recomendado p/ iOS AR)
-    const title = qs.get('title') || 'Modelo';
-    const poster = qs.get('poster');       // opcional
+    const qs = new URLSearchParams(window.location.search);
+    const modelUrl = qs.get("model");
 
-    if (!src) {
-      alert('Nenhum modelo (.glb) informado. Use ?model=URL_DO_MODELO');
+    if (!modelUrl) {
+      loading.innerText = "ERRO: Nenhum modelo informado.";
     } else {
-      $viewer.src = src;
-      $viewer.setAttribute('ar-scale', 'auto'); // melhor adaptação no ambiente
-      $viewer.setAttribute('ios-src', ios || ''); // Quick Look usa USDZ
-      $viewer.setAttribute('ar', '');            // garante AR on
-      $viewer.setAttribute('ar-placement', 'floor'); // ancora no chão
-      $viewer.setAttribute('orientation', '0deg 0deg 0deg');
-      if (poster) $viewer.setAttribute('poster', poster);
-      $viewer.setAttribute('alt', title);
+      viewer.src = modelUrl;   // ESSENCIAL
     }
 
-    // some feedbacks
-    $viewer.addEventListener('load', () => $loading.classList.add('hide'));
-    $viewer.addEventListener('error', (e) => {
-      console.error('Erro ao carregar o modelo:', e);
-      $loading.textContent = 'Falha ao carregar o modelo.';
+    viewer.addEventListener("load", () => {
+      loading.classList.add("hide");
+      console.log("Modelo carregado:", modelUrl);
+    });
+
+    viewer.addEventListener("error", (e) => {
+      loading.innerText = "Falha ao carregar o modelo.";
+      console.error(e);
     });
   </script>
 </body>

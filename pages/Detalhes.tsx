@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Alert,
   Share,
+  Linking,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useProjetos } from "../context/ProjetosContext";
@@ -30,6 +32,20 @@ export default function Detalhes({ route, navigation }: any) {
       </View>
     );
   }
+
+ const abrirAR = () => {
+        const modelUrl = "https://archivieew.web.app/modelos/model.glb";
+
+        // Abre SEMPRE seu visualizador (que já contém model-viewer)
+        const viewerUrl =
+          "https://archivieew.web.app/ar-view.html?model=" +
+          encodeURIComponent(modelUrl);
+
+        Linking.openURL(viewerUrl).catch(() => {
+          Alert.alert("Erro", "Não foi possível abrir o modo AR.");
+        });
+    };
+
 
   const editarProjeto = () => {
     navigation.navigate("CadastrarProjeto", { editar: true, projeto: model });
@@ -108,9 +124,7 @@ ${model.dae ? `📁 Arquivo DAE: ${model.dae.split("/").pop()}` : ""}
             size={18}
             color="#2E8376"
           />
-          <Text style={styles.infoText}>
-            {model.info || "Sem informações"}
-          </Text>
+          <Text style={styles.infoText}>{model.info || "Sem informações"}</Text>
         </View>
 
         <Text style={styles.sectionTitle}>Descrição</Text>
@@ -118,54 +132,22 @@ ${model.dae ? `📁 Arquivo DAE: ${model.dae.split("/").pop()}` : ""}
           {model.descricao || "Nenhuma descrição adicionada."}
         </Text>
 
-        {(model.fbx || model.dae) && (
-          <>
-            <Text style={styles.sectionTitle}>Arquivos do Projeto</Text>
-            {model.fbx && (
-              <Text style={styles.fileText}>
-                <Ionicons name="cube-outline" size={16} color="#2E8376" /> FBX:{" "}
-                {model.fbx.split("/").pop()}
-              </Text>
-            )}
-            {model.dae && (
-              <Text style={styles.fileText}>
-                <Ionicons
-                  name="cloud-upload-outline"
-                  size={16}
-                  color="#2E8376"
-                />{" "}
-                DAE: {model.dae.split("/").pop()}
-              </Text>
-            )}
-          </>
-        )}
-
-        {/* 🔹 Botão de RA */}
-       <TouchableOpacity
-        style={styles.editButton}
-        onPress={() => {
-          // URL do modelo 3D hospedado no Firebase
-          const modelUrl = "https://archivieew.web.app/modelos/model.glb";
-
-          // URL do visualizador AR hospedado no Firebase
-          const viewerUrl = `https://archivieew.web.app/ar-view.html?model=${encodeURIComponent(modelUrl)}`;
-
-          // Navega até a tela que abre a WebView
-          navigation.navigate("ARViewer", { url: viewerUrl });
-        }}
-      >
-        <Ionicons name="cube-outline" size={20} color="#fff" />
-        <Text style={styles.editText}>Abrir em RA</Text>
-      </TouchableOpacity>
+        {/* BOTÃO DE RA - SCENE VIEWER */}
+        <TouchableOpacity style={styles.editButton} onPress={abrirAR}>
+          <Ionicons name="cube-outline" size={20} color="#fff" />
+          <Text style={styles.editText}>Abrir em RA</Text>
+        </TouchableOpacity>
 
 
-        {/* 🔴 Excluir Projeto */}
+
+
+        {/* EXCLUIR */}
         <TouchableOpacity style={styles.deleteButton} onPress={excluirProjeto}>
           <Ionicons name="trash-outline" size={20} color="#fff" />
           <Text style={styles.deleteText}>Excluir Projeto</Text>
         </TouchableOpacity>
 
-        {/* 🟢 Compartilhar */}
+        {/* COMPARTILHAR */}
         <TouchableOpacity
           style={styles.shareButton}
           onPress={compartilharProjeto}
@@ -240,11 +222,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     marginBottom: 20,
-  },
-  fileText: {
-    fontSize: 14,
-    color: "#444",
-    marginTop: 4,
   },
   editButton: {
     flexDirection: "row",
